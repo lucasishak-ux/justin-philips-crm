@@ -67,5 +67,21 @@
  <textarea name="notes" placeholder="Notities"></textarea>
  <div class="actions"><button type="button" onclick="jobDialog.close()">Annuleren</button><button class="primary">Opslaan</button></div>
 </form></dialog>
+<dialog id="customerDetailDialog" class="detaildialog">
+  <div class="detailhead">
+    <div><small>KLANTDOSSIER</small><h2 id="detailName"></h2></div>
+    <button class="closebtn" onclick="customerDetailDialog.close()">×</button>
+  </div>
+  <div id="detailContact" class="detailcontact"></div>
+  <div class="detailactions">
+    <button class="primary" id="detailNewJob">+ Nieuwe opdracht</button>
+    <a id="detailCall" class="actionlink" href="#">Bellen</a>
+    <a id="detailWhatsapp" class="actionlink" target="_blank" href="#">WhatsApp</a>
+  </div>
+  <div class="detailsection">
+    <div class="sectiontitle"><h2>Opdrachthistorie</h2><span id="detailJobCount"></span></div>
+    <div id="detailJobs"></div>
+  </div>
+</dialog>
 <script src="app.js"></script>
 </body></html>

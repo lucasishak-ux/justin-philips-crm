@@ -13,9 +13,37 @@ jobForm.onsubmit=e=>{e.preventDefault();let d=Object.fromEntries(new FormData(e.
 function delCustomer(id){if(confirm('Klant en gekoppelde opdrachten verwijderen?')){customers=customers.filter(c=>c.id!=id);jobs=jobs.filter(j=>j.customer!=id);save()}} window.delCustomer=delCustomer;
 function delJob(id){if(confirm('Opdracht verwijderen?')){jobs=jobs.filter(j=>j.id!=id);save()}} window.delJob=delJob;
 function whatsapp(phone){let p=String(phone||'').replace(/\D/g,'');if(p.startsWith('0'))p='31'+p.slice(1);return p}
-function renderCustomers(){let q=($('#searchCustomer').value||'').toLowerCase();let rows=customers.filter(c=>Object.values(c).join(' ').toLowerCase().includes(q));customerRows.innerHTML=rows.map(c=>`<tr><td><b>${esc(c.name)}</b>${c.notes?`<div class="muted">${esc(c.notes)}</div>`:''}</td><td>${c.phone?`<a href="tel:${esc(c.phone)}">${esc(c.phone)}</a>`:''}<br><span class="muted">${esc(c.email)}</span></td><td>${esc(c.address)}</td><td>${c.phone?`<a target="_blank" href="https://wa.me/${whatsapp(c.phone)}">WhatsApp</a> · `:''}<a href="#" onclick="delCustomer(${c.id});return false">Verwijder</a></td></tr>`).join('')||'<tr><td colspan="4" class="empty">Geen klanten gevonden</td></tr>'}
+function renderCustomers(){let q=($('#searchCustomer').value||'').toLowerCase();let rows=customers.filter(c=>Object.values(c).join(' ').toLowerCase().includes(q));customerRows.innerHTML=rows.map(c=>`<tr><td><a class="customername" href="#" onclick="openCustomerDetail(${c.id});return false"><b>${esc(c.name)}</b></a>${c.notes?`<div class="muted">${esc(c.notes)}</div>`:''}</td><td>${c.phone?`<a href="tel:${esc(c.phone)}">${esc(c.phone)}</a>`:''}<br><span class="muted">${esc(c.email)}</span></td><td>${esc(c.address)}</td><td>${c.phone?`<a target="_blank" href="https://wa.me/${whatsapp(c.phone)}">WhatsApp</a> · `:''}<a href="#" onclick="delCustomer(${c.id});return false">Verwijder</a></td></tr>`).join('')||'<tr><td colspan="4" class="empty">Geen klanten gevonden</td></tr>'}
 $('#searchCustomer').oninput=renderCustomers;
 function renderJobs(){let f=jobFilter.value;let arr=jobs.filter(j=>!f||j.status==f);jobCards.innerHTML=arr.map(j=>`<article><span class="badge">${esc(j.status)}</span><strong>${esc(j.title)}</strong><p>${esc(cname(j.customer))}</p>${j.date?`<p>📅 ${new Date(j.date).toLocaleString('nl-NL',{dateStyle:'medium',timeStyle:'short'})}</p>`:''}${j.amount?`<b>€ ${j.amount.toLocaleString('nl-NL',{minimumFractionDigits:2})}</b>`:''}${j.notes?`<p>${esc(j.notes)}</p>`:''}<p><a href="#" onclick="delJob(${j.id});return false">Verwijderen</a></p></article>`).join('')||'<div class="empty">Geen opdrachten</div>'}
 jobFilter.onchange=renderJobs;
 function render(){customerCount.textContent=customers.length;openCount.textContent=jobs.filter(j=>!['Afgerond','Gefactureerd'].includes(j.status)).length;let now=new Date(),week=new Date(now);week.setDate(now.getDate()+7);weekCount.textContent=jobs.filter(j=>j.date&&new Date(j.date)>=now&&new Date(j.date)<=week).length;revenue.textContent='€ '+jobs.filter(j=>['Afgerond','Gefactureerd'].includes(j.status)).reduce((a,j)=>a+j.amount,0).toLocaleString('nl-NL',{minimumFractionDigits:2});recentJobs.innerHTML=jobs.slice(0,5).map(j=>`<div class="item"><b>${esc(j.title)}</b><span class="badge">${esc(j.status)}</span><br><small>${esc(cname(j.customer))}</small></div>`).join('')||'<div class="empty">Nog geen opdrachten</div>';let ds=now.toLocaleDateString('sv-SE');today.innerHTML=jobs.filter(j=>j.date?.slice(0,10)==ds).map(j=>`<div class="item"><b>${new Date(j.date).toLocaleTimeString('nl-NL',{hour:'2-digit',minute:'2-digit'})} · ${esc(j.title)}</b><br><small>${esc(cname(j.customer))}</small></div>`).join('')||'<div class="empty">Geen afspraken vandaag</div>';renderCustomers();renderJobs();planningList.innerHTML=jobs.filter(j=>j.date).sort((a,b)=>new Date(a.date)-new Date(b.date)).map(j=>`<div class="item"><b>${new Date(j.date).toLocaleString('nl-NL',{dateStyle:'medium',timeStyle:'short'})}</b> — ${esc(j.title)}<span class="badge">${esc(cname(j.customer))}</span></div>`).join('')||'<div class="empty">Planning is leeg</div>'}
+
+let activeCustomerId=null;
+function openCustomerDetail(id){
+  const c=customers.find(x=>x.id==id); if(!c)return;
+  activeCustomerId=id;
+  detailName.textContent=c.name;
+  detailContact.innerHTML=[
+    c.phone?`<div><small>TELEFOON</small><b>${esc(c.phone)}</b></div>`:'',
+    c.email?`<div><small>E-MAIL</small><b>${esc(c.email)}</b></div>`:'',
+    c.address?`<div><small>ADRES</small><b>${esc(c.address)}</b></div>`:'',
+    c.notes?`<div><small>NOTITIES</small><b>${esc(c.notes)}</b></div>`:''
+  ].join('');
+  detailCall.href=c.phone?'tel:'+c.phone:'#';
+  detailCall.style.display=c.phone?'inline-block':'none';
+  detailWhatsapp.href=c.phone?'https://wa.me/'+whatsapp(c.phone):'#';
+  detailWhatsapp.style.display=c.phone?'inline-block':'none';
+  const cj=jobs.filter(j=>j.customer==id).sort((a,b)=>new Date(b.date||0)-new Date(a.date||0));
+  detailJobCount.textContent=cj.length+' opdracht'+(cj.length==1?'':'en');
+  detailJobs.innerHTML=cj.map(j=>`<div class="historyjob"><div><b>${esc(j.title)}</b><div class="muted">${j.date?new Date(j.date).toLocaleString('nl-NL',{dateStyle:'medium',timeStyle:'short'}):'Geen datum'}</div></div><div class="historyright"><span class="badge static">${esc(j.status)}</span>${j.amount?`<strong>€ ${j.amount.toLocaleString('nl-NL',{minimumFractionDigits:2})}</strong>`:''}</div>${j.notes?`<p>${esc(j.notes)}</p>`:''}</div>`).join('')||'<div class="empty">Nog geen opdrachten voor deze klant</div>';
+  customerDetailDialog.showModal();
+}
+window.openCustomerDetail=openCustomerDetail;
+detailNewJob.onclick=()=>{
+  customerDetailDialog.close();
+  openJob();
+  jobCustomer.value=String(activeCustomerId);
+};
+
 render();

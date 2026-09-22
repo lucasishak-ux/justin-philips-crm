@@ -1,21 +1,19 @@
-# Justin Philips CRM
+# Justin Philips CRM v2
 
-Werkende eerste prototypeversie.
+Nieuwe versie met **klantdossiers**.
 
-## Functies
-- Dashboard
-- Klanten toevoegen en zoeken
-- Bellen en WhatsApp vanuit klantkaart
-- Opdrachten met statussen
-- Planning
-- Omzetoverzicht
-- Geschikt voor iPhone en desktop
+## Nieuw in v2
+- Klik/tik op de naam van een klant
+- Volledig klantdossier met contactgegevens en notities
+- Alle opdrachten van die klant in één historie
+- Datum, status, bedrag en notities per opdracht
+- Vanuit het klantdossier direct bellen of WhatsAppen
+- Vanuit het klantdossier direct een nieuwe opdracht voor die klant aanmaken
 
-## GitHub Pages
-Upload `index.html`, `style.css` en `app.js` naar de hoofdmap van de repository.
-Ga daarna naar **Settings → Pages → Deploy from a branch → main / root → Save**.
+De bestaande functies blijven aanwezig: dashboard, klanten, zoeken, opdrachten, planning en omzet.
 
-## Belangrijk
-Deze versie gebruikt `localStorage`: de gegevens blijven alleen bewaard in de browser op het apparaat waarop ze zijn ingevoerd.
-Gebruik deze prototypeversie daarom niet als definitief systeem voor gevoelige klantgegevens.
-Voor een echte multi-user CRM-versie is een beveiligde database en authenticatie nodig.
+## Updaten op GitHub
+Vervang `index.html`, `style.css` en `app.js` door deze v2-bestanden.
+
+## Opslag
+Deze versie gebruikt nog steeds localStorage. Gegevens staan dus alleen op het gebruikte apparaat/browser. Voor gebruik door meerdere apparaten of medewerkers is een beveiligde online database de volgende stap.
