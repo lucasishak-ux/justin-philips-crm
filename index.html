@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#111820">
+<title>Justin Philips CRM</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<aside>
+  <div class="brand"><span>JP</span><div><b>JUSTIN PHILIPS</b><small>CRM</small></div></div>
+  <nav>
+    <button class="active" data-page="dashboard">⌂ <span>Dashboard</span></button>
+    <button data-page="customers">👥 <span>Klanten</span></button>
+    <button data-page="jobs">▣ <span>Opdrachten</span></button>
+    <button data-page="planning">▦ <span>Planning</span></button>
+  </nav>
+</aside>
+<main>
+<header><div><h1 id="pageTitle">Dashboard</h1><p>Justin Philips CRM</p></div><button class="primary" id="headerNew">+ Nieuwe klant</button></header>
+
+<section id="dashboard" class="page active">
+ <div class="stats">
+  <article><small>KLANTEN</small><strong id="customerCount">0</strong><span>Totaal</span></article>
+  <article><small>OPENSTAAND</small><strong id="openCount">0</strong><span>Opdrachten</span></article>
+  <article><small>KOMENDE 7 DAGEN</small><strong id="weekCount">0</strong><span>Afspraken</span></article>
+  <article><small>OMZET</small><strong id="revenue">€ 0</strong><span>Afgerond / gefactureerd</span></article>
+ </div>
+ <div class="grid">
+  <article><h2>Recente opdrachten</h2><div id="recentJobs"></div></article>
+  <article><h2>Vandaag</h2><div id="today"></div></article>
+ </div>
+</section>
+
+<section id="customers" class="page">
+ <div class="toolbar"><input id="searchCustomer" placeholder="Zoek klant, telefoon, e-mail of adres…"><button class="primary" onclick="openCustomer()">+ Nieuwe klant</button></div>
+ <article class="tablewrap"><table><thead><tr><th>Klant</th><th>Contact</th><th>Adres</th><th>Acties</th></tr></thead><tbody id="customerRows"></tbody></table></article>
+</section>
+
+<section id="jobs" class="page">
+ <div class="toolbar"><select id="jobFilter"><option value="">Alle statussen</option><option>Aanvraag</option><option>Offerte</option><option>Ingepland</option><option>Bezig</option><option>Afgerond</option><option>Gefactureerd</option></select><button class="primary" onclick="openJob()">+ Nieuwe opdracht</button></div>
+ <div id="jobCards" class="cards"></div>
+</section>
+
+<section id="planning" class="page">
+ <article><h2>Planning</h2><div id="planningList"></div></article>
+</section>
+</main>
+
+<dialog id="customerDialog"><form id="customerForm">
+ <h2>Nieuwe klant</h2>
+ <input name="name" placeholder="Naam *" required>
+ <input name="phone" inputmode="tel" placeholder="Telefoon">
+ <input name="email" type="email" placeholder="E-mail">
+ <input name="address" placeholder="Adres">
+ <textarea name="notes" placeholder="Notities"></textarea>
+ <div class="actions"><button type="button" onclick="customerDialog.close()">Annuleren</button><button class="primary">Opslaan</button></div>
+</form></dialog>
+
+<dialog id="jobDialog"><form id="jobForm">
+ <h2>Nieuwe opdracht</h2>
+ <select name="customer" id="jobCustomer" required></select>
+ <input name="title" placeholder="Werkzaamheden *" required>
+ <input name="date" type="datetime-local">
+ <select name="status"><option>Aanvraag</option><option>Offerte</option><option>Ingepland</option><option>Bezig</option><option>Afgerond</option><option>Gefactureerd</option></select>
+ <input name="amount" type="number" min="0" step=".01" placeholder="Bedrag €">
+ <textarea name="notes" placeholder="Notities"></textarea>
+ <div class="actions"><button type="button" onclick="jobDialog.close()">Annuleren</button><button class="primary">Opslaan</button></div>
+</form></dialog>
+<script src="app.js"></script>
+</body></html>
